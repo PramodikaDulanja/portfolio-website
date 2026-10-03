@@ -182,17 +182,17 @@ export default function AdminDashboard() {
 
   // STRICT LOCK: Do not render anything until authenticated
   if (!isAuthenticated || loading) {
-    return <div className="min-h-screen bg-[#0A1710] flex items-center justify-center text-lime-400 font-bold">Securing Connection...</div>;
+    return <div className="min-h-screen bg-[#060913] flex items-center justify-center text-cyan-400 font-bold">Securing Connection...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1710] text-slate-300 font-sans selection:bg-lime-500/30 pb-20">
+    <div className="min-h-screen bg-[#060913] text-slate-300 font-sans selection:bg-cyan-500/30 pb-20">
       
       {/* Top Navbar */}
-      <header className="bg-[#0A1710]/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50">
+      <header className="bg-[#060913]/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-lime-400 to-green-600 text-white rounded-lg flex items-center justify-center text-xs font-bold shadow-lg shadow-lime-500/20">
+            <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-lg flex items-center justify-center text-xs font-bold shadow-lg shadow-cyan-500/20">
               BD
             </div>
             <h1 className="text-xl font-bold text-white tracking-tight">Admin Dashboard</h1>
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
         </div>
 
         {statusMessage.text && (
-          <div className={`p-4 rounded-xl mb-6 flex items-start gap-3 border ${statusMessage.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-lime-500/10 border-lime-500/20 text-lime-300'}`}>
+          <div className={`p-4 rounded-xl mb-6 flex items-start gap-3 border ${statusMessage.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-300' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300'}`}>
             {statusMessage.type === 'error' ? <AlertCircle size={20} className="mt-0.5" /> : <CheckCircle size={20} className="mt-0.5" />}
             <p className="text-sm font-medium">{statusMessage.text}</p>
           </div>
@@ -232,42 +232,42 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Project Title</label>
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full px-4 py-3 bg-[#0A1710] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-lime-500 transition-all placeholder:text-slate-600" />
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600" />
             </div>
 
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Description</label>
-              <textarea rows="3" value={description} onChange={(e) => setDescription(e.target.value)} required className="w-full px-4 py-3 bg-[#0A1710] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-lime-500 transition-all placeholder:text-slate-600 resize-none"></textarea>
+              <textarea rows="3" value={description} onChange={(e) => setDescription(e.target.value)} required className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600 resize-none"></textarea>
             </div>
 
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Tech Stack Tags (Comma separated)</label>
-              <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} required className="w-full px-4 py-3 bg-[#0A1710] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-lime-500 transition-all placeholder:text-slate-600" />
+              <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} required className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600" />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">GitHub URL (Optional)</label>
-              <input type="url" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} className="w-full px-4 py-3 bg-[#0A1710] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-lime-500 transition-all placeholder:text-slate-600" />
+              <input type="url" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600" />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Live Demo URL (Optional)</label>
-              <input type="url" value={demoUrl} onChange={(e) => setDemoUrl(e.target.value)} className="w-full px-4 py-3 bg-[#0A1710] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-lime-500 transition-all placeholder:text-slate-600" />
+              <input type="url" value={demoUrl} onChange={(e) => setDemoUrl(e.target.value)} className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600" />
             </div>
 
             <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Project Screenshot {editingId && "(Leave blank to keep existing)"}</label>
               <div className="relative group cursor-pointer">
                 <input type="file" accept="image/png, image/jpeg, image/webp" onChange={(e) => setImageFile(e.target.files[0])} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required={!editingId} />
-                <div className={`w-full border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all ${imageFile ? 'border-lime-500 bg-lime-500/5' : 'border-white/10 hover:border-lime-500/50 bg-[#0A1710]'}`}>
+                <div className={`w-full border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all ${imageFile ? 'border-cyan-500 bg-cyan-500/5' : 'border-white/10 hover:border-cyan-500/50 bg-[#060913]'}`}>
                   {imageFile ? (
                     <>
-                      <ImageIcon size={32} className="text-lime-400 mb-3" />
-                      <p className="text-sm font-bold text-lime-400">{imageFile.name}</p>
+                      <ImageIcon size={32} className="text-cyan-400 mb-3" />
+                      <p className="text-sm font-bold text-cyan-400">{imageFile.name}</p>
                     </>
                   ) : (
                     <>
-                      <UploadCloud size={32} className="text-slate-500 mb-3 group-hover:text-lime-400 transition-colors" />
+                      <UploadCloud size={32} className="text-slate-500 mb-3 group-hover:text-cyan-400 transition-colors" />
                       <p className="text-sm font-bold text-white mb-1">Click to upload an image</p>
                     </>
                   )}
@@ -276,7 +276,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <button type="submit" disabled={uploading} className="w-full py-4 bg-gradient-to-r from-lime-500 to-green-600 text-white text-sm font-bold rounded-xl hover:shadow-[0_0_20px_-5px_rgba(132,204,22,0.4)] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed">
+          <button type="submit" disabled={uploading} className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold rounded-xl hover:shadow-[0_0_20px_-5px_rgba(132,204,22,0.4)] transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 disabled:cursor-not-allowed">
             {uploading ? 'Processing...' : editingId ? <><Save size={18} /> Save Changes</> : <><PlusCircle size={18} /> Publish Project</>}
           </button>
         </form>
