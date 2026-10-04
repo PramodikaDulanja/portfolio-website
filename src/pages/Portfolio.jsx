@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../config/supabase';
+import emailjs from '@emailjs/browser';
 import { 
   Menu, X, ChevronRight, Mail, Phone, MapPin, 
   ExternalLink, GraduationCap, Award, Download,
   Code, Layout, Database, Cloud, Cpu, Wrench, Brain, Settings,
-  Users, Target, Lightbulb, MessageCircle, Compass, Clock
+  Users, Target, Lightbulb, MessageCircle, Compass, Clock, CheckCircle
 } from 'lucide-react';
 import { 
   FaGithub, FaLinkedin, FaJava, FaPython, FaPhp, FaReact, 
@@ -166,14 +167,35 @@ export default function Portfolio() {
     }
   };
 
-  const handleFormSubmit = (e) => {
+const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus({ submitting: true, submitted: false });
-    setTimeout(() => {
+
+    try {
+      // Send the email using EmailJS
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          name: formData.name,       
+          email: formData.email,     
+          message: formData.message, 
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+
+      // On Success: Show success message and clear the form
       setFormStatus({ submitting: false, submitted: true });
       setFormData({ name: '', email: '', message: '' });
+      
+      // Hide the success message after 5 seconds
       setTimeout(() => setFormStatus({ submitting: false, submitted: false }), 5000);
-    }, 1200);
+
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      alert('Something went wrong. Please try emailing me directly.');
+      setFormStatus({ submitting: false, submitted: false });
+    }
   };
 
   const navLinks = [
@@ -215,6 +237,23 @@ export default function Portfolio() {
     fetchProjects();
   }, []);
   
+const getBadgeStyle = (type) => {
+  // These base classes apply to EVERY badge (small text, padding, rounded shape)
+  const baseClasses = "px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider border";
+  
+  switch (type) {
+    case 'Ongoing': 
+      return `${baseClasses} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`;
+    case 'Group': 
+      return `${baseClasses} bg-blue-500/20 text-blue-400 border-blue-500/20`;
+    case 'Individual':
+    default: 
+      return `${baseClasses} bg-cyan-500/20 text-cyan-400 border-cyan-500/20`; 
+  }
+};
+
+
+
 
   return (
     <div className="min-h-screen bg-[#060913] text-slate-300 font-sans selection:bg-cyan-500/30 selection:text-cyan-100 overflow-hidden relative">
@@ -495,9 +534,15 @@ export default function Portfolio() {
                     {/* Project Info */}
                     <div className="p-6 flex-grow flex flex-col justify-between">
                       <div>
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-xl font-extrabold text-white">{project.title}</h3>
-                        </div>
+                      <div className="flex justify-between items-start mb-3 gap-4">
+                        <h3 className="text-xl font-extrabold text-white">{project.title}</h3>
+                        
+                        {project.project_type && (
+                          <span className={getBadgeStyle(project.project_type)}>
+                            {project.project_type}
+                          </span>
+                        )}
+                      </div>
                         <p className="text-sm text-slate-400 font-medium leading-relaxed mb-5">
                           {project.description}
                         </p>
@@ -535,88 +580,89 @@ export default function Portfolio() {
           </div>
         </section>
 
+        
         {/* CONTACT SECTION */}
-        <section id="contact" className="py-32 relative">
+        <section id="contact" className="py-24 relative">
           <div className="absolute inset-0 bg-slate-900/20 border-t border-white/5"></div>
-          <div className="max-w-6xl mx-auto px-6 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-20">
+          <div className="max-w-6xl mx-auto px-6 relative z-40">
+            <div className="grid lg:grid-cols-2 gap-16">
               
               <div>
-                <p className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-2">Connect</p>
-                <h2 className="text-4xl md:text-5xl font-black text-white mb-6">Let's Build Something.</h2>
-                <div className="w-20 h-1.5 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mb-10"></div>
-                <p className="text-lg text-slate-400 font-medium leading-relaxed mb-12">
+                <p className="text-cyan-400 font-bold tracking-widest uppercase text-xs mb-2">Connect</p>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Let's Build Something.</h2>
+                <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mb-8"></div>
+                <p className="text-sm md:text-base text-slate-400 font-medium leading-relaxed mb-10">
                   I am currently open to new opportunities, collaborations, and discussions regarding software engineering and systems architecture.
                 </p>
 
-                <div className="space-y-6">
-                  <div className="flex items-center gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-cyan-500/30 transition-colors group">
-                    <div className="w-14 h-14 bg-[#060913] border border-white/10 rounded-xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><Mail size={24} /></div>
+                <div className="space-y-5">
+                  <div className="flex items-center gap-5 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/30 backdrop-blur-md transition-colors group">
+                    <div className="w-12 h-12 bg-[#060913] border border-white/10 rounded-lg flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><Mail size={20} /></div>
                     <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email</p>
-                      <p className="text-lg text-white font-bold tracking-wide">dulanjapramodika@gmail.com</p>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Email</p>
+                      <p className="text-base text-white font-bold tracking-wide">dulanjapramodika@gmail.com</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-cyan-500/30 transition-colors group">
-                    <div className="w-14 h-14 bg-[#060913] border border-white/10 rounded-xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><Phone size={24} /></div>
+                  <div className="flex items-center gap-5 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/30 backdrop-blur-md transition-colors group">
+                    <div className="w-12 h-12 bg-[#060913] border border-white/10 rounded-lg flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><Phone size={20} /></div>
                     <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Phone</p>
-                      <p className="text-lg text-white font-bold tracking-wide">+94 71 286 6339</p>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Phone</p>
+                      <p className="text-base text-white font-bold tracking-wide">+94 71 286 6339</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-cyan-500/30 transition-colors group">
-                    <div className="w-14 h-14 bg-[#060913] border border-white/10 rounded-xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><MapPin size={24} /></div>
+                  <div className="flex items-center gap-5 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-cyan-500/30 backdrop-blur-md transition-colors group">
+                    <div className="w-12 h-12 bg-[#060913] border border-white/10 rounded-lg flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-lg"><MapPin size={20} /></div>
                     <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Location</p>
-                      <p className="text-lg text-white font-bold tracking-wide">Balangoda, Sri Lanka</p>
+                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Location</p>
+                      <p className="text-base text-white font-bold tracking-wide">Balangoda, Sri Lanka</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Contact Form */}
-              <div className="bg-[#060913]/50 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+              <div className="bg-[#060913]/50 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none"></div>
                 
                 {formStatus.submitted ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center py-20 relative z-10">
-                    <div className="w-20 h-20 bg-cyan-500/10 text-cyan-400 rounded-full flex items-center justify-center mb-6 border border-cyan-500/20 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
-                      <CheckCircle size={40} />
+                  <div className="h-full flex flex-col items-center justify-center text-center py-16 relative z-10">
+                    <div className="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-full flex items-center justify-center mb-5 border border-cyan-500/20 shadow-[0_0_30px_rgba(132,204,22,0.2)]">
+                      <CheckCircle size={32} />
                     </div>
-                    <h3 className="text-3xl font-black text-white mb-4">Message Sent</h3>
-                    <p className="text-slate-400 text-lg font-medium">Thank you for reaching out. I will respond to your inquiry promptly.</p>
+                    <h3 className="text-2xl font-extrabold text-white mb-3">Message Sent</h3>
+                    <p className="text-slate-400 text-sm font-medium">Thank you for reaching out. I will respond to your inquiry promptly.</p>
                   </div>
                 ) : (
-                  <form onSubmit={handleFormSubmit} className="space-y-6 relative z-10">
+                  <form onSubmit={handleFormSubmit} className="space-y-5 relative z-50">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-bold text-slate-300 mb-2">Full Name</label>
+                      <label htmlFor="name" className="block text-xs font-bold text-slate-300 mb-1.5">Full Name</label>
                       <input 
                         type="text" id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required
-                        className="w-full px-5 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all placeholder:text-slate-600 shadow-inner"
+                        className="w-full px-4 py-3 text-sm bg-white/5 border border-white/10 text-white font-medium rounded-lg focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all placeholder:text-slate-600 shadow-inner"
                         placeholder="John Doe"
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-bold text-slate-300 mb-2">Email Address</label>
+                      <label htmlFor="email" className="block text-xs font-bold text-slate-300 mb-1.5">Email Address</label>
                       <input 
                         type="email" id="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required
-                        className="w-full px-5 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all placeholder:text-slate-600 shadow-inner"
+                        className="w-full px-4 py-3 text-sm bg-white/5 border border-white/10 text-white font-medium rounded-lg focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all placeholder:text-slate-600 shadow-inner"
                         placeholder="john@example.com"
                       />
                     </div>
                     <div>
-                      <label htmlFor="message" className="block text-sm font-bold text-slate-300 mb-2">Message</label>
+                      <label htmlFor="message" className="block text-xs font-bold text-slate-300 mb-1.5">Message</label>
                       <textarea 
-                        id="message" rows="5" value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} required
-                        className="w-full px-5 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-xl focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all resize-none placeholder:text-slate-600 shadow-inner"
+                        id="message" rows="10" value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} required
+                        className="w-full px-4 py-3 text-sm bg-white/5 border border-white/10 text-white font-medium rounded-lg focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all resize-none placeholder:text-slate-600 shadow-inner"
                         placeholder="How can we collaborate?"
                       ></textarea>
                     </div>
                     <button 
                       type="submit" disabled={formStatus.submitting}
-                      className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-lg rounded-xl hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.4)] transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+                      className="w-full py-3 text-sm bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-lg hover:shadow-[0_0_20px_-5px_rgba(34,197,94,0.4)] transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-2"
                     >
                       {formStatus.submitting ? 'Sending...' : 'Send Message'}
                     </button>

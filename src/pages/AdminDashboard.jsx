@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../config/supabase';
-import { LogOut, UploadCloud, PlusCircle, CheckCircle, AlertCircle, Image as ImageIcon, Trash2, Edit, Save } from 'lucide-react';
+import { LogOut, UploadCloud, PlusCircle, CheckCircle, AlertCircle, Image as ImageIcon, Trash2, Edit, Save, ChevronDown } from 'lucide-react';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -18,6 +18,7 @@ export default function AdminDashboard() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [projectType, setProjectType] = useState('Individual');
   const [tags, setTags] = useState('');
   const [githubUrl, setGithubUrl] = useState('');
   const [demoUrl, setDemoUrl] = useState('');
@@ -65,6 +66,7 @@ export default function AdminDashboard() {
     setEditingId(project.id);
     setTitle(project.title);
     setDescription(project.description);
+    setProjectType(project.project_type || 'Individual');
     setTags(project.tags ? project.tags.join(', ') : '');
     setGithubUrl(project.github_url || '');
     setDemoUrl(project.demo_url || '');
@@ -125,6 +127,7 @@ export default function AdminDashboard() {
       const projectData = {
         title: title,
         description: description,
+        project_type: projectType,
         tags: tagsArray,
         github_url: githubUrl,
         demo_url: demoUrl,
@@ -154,6 +157,7 @@ export default function AdminDashboard() {
       setEditingId(null);
       setTitle('');
       setDescription('');
+      setProjectType('Individual');
       setTags('');
       setGithubUrl('');
       setDemoUrl('');
@@ -174,6 +178,7 @@ export default function AdminDashboard() {
     setEditingId(null);
     setTitle('');
     setDescription('');
+    setProjectType('Individual');
     setTags('');
     setGithubUrl('');
     setDemoUrl('');
@@ -253,6 +258,27 @@ export default function AdminDashboard() {
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Live Demo URL (Optional)</label>
               <input type="url" value={demoUrl} onChange={(e) => setDemoUrl(e.target.value)} className="w-full px-4 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-slate-600" />
+            </div>
+
+            <div>
+            <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">Project Type</label>
+            <div className="relative">
+                <select 
+                value={projectType} 
+                onChange={(e) => setProjectType(e.target.value)} 
+                className="w-full pl-4 pr-10 py-3 bg-[#060913] border border-white/10 text-white text-sm font-medium rounded-xl focus:outline-none focus:border-cyan-500 transition-all appearance-none cursor-pointer"
+                >
+                <option value="Individual">Individual</option>
+                <option value="Group">Group</option>
+                <option value="Ongoing">Ongoing</option>
+                </select>
+                
+                {/* Custom Dropdown Arrow */}
+                <ChevronDown 
+                size={18} 
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" 
+                />
+            </div>
             </div>
 
             <div className="md:col-span-2">
