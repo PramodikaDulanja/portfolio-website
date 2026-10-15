@@ -431,20 +431,21 @@ export default function Portfolio() {
               <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mx-auto"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* Adjusted gap and padding for compact mobile view */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
               {SKILL_CATEGORIES.map((category, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] backdrop-blur-md transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="p-2.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors">
+                <div key={idx} className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 md:p-6 hover:border-cyan-500/30 hover:bg-white/[0.04] backdrop-blur-md transition-all duration-300 group hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10">
+                  <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-5">
+                    <div className="p-2 md:p-2.5 bg-white/5 rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4 md:[&>svg]:w-5 md:[&>svg]:h-5">
                       {category.icon}
                     </div>
-                    <h3 className="text-lg font-bold text-white">{category.title}</h3>
+                    <h3 className="text-base md:text-lg font-bold text-white">{category.title}</h3>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2">
                     {category.skills.map((skill, sIdx) => (
-                      <div key={sIdx} className="flex items-center gap-1.5 bg-[#060913]/80 border border-white/10 px-3 py-1.5 rounded-md hover:border-cyan-500/50 transition-colors cursor-default">
+                      <div key={sIdx} className="flex items-center gap-1 md:gap-1.5 bg-[#060913]/80 border border-white/10 px-2 md:px-3 py-1 md:py-1.5 rounded-md hover:border-cyan-500/50 transition-colors cursor-default text-[10px] md:text-xs">
                         {skill.icon}
-                        <span className="text-xs font-semibold text-slate-300">{skill.name}</span>
+                        <span className="font-semibold text-slate-300">{skill.name}</span>
                       </div>
                     ))}
                   </div>
@@ -453,18 +454,19 @@ export default function Portfolio() {
             </div>
 
             {/* Soft Skills Section */}
-            <div className="mt-28">
-              <div className="text-center mb-12">
-                <h3 className="text-3xl font-black text-white mb-4">Professional Attributes</h3>
-                <p className="text-slate-400 font-medium">Core competencies driving effective collaboration and project success.</p>
+            <div className="mt-20 md:mt-28">
+              <div className="text-center mb-10 md:mb-12">
+                <h3 className="text-2xl md:text-3xl font-black text-white mb-3 md:mb-4">Professional Attributes</h3>
+                <p className="text-sm md:text-base text-slate-400 font-medium">Core competencies driving effective collaboration and project success.</p>
               </div>
-              <div className="flex flex-wrap justify-center gap-8 mb-20">
+              {/* Adjusted flex gap and padding for compact mobile view */}
+              <div className="flex flex-wrap justify-center gap-3 md:gap-8 mb-16 md:mb-20">
                 {SOFT_SKILLS.map((skill, idx) => (
-                  <div key={idx} className="flex items-center gap-3 bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 px-6 py-4 rounded-2xl hover:bg-white/[0.04] transition-all group hover:-translate-y-1">
-                    <div className="p-2 bg-[#060913] rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors shadow-inner">
+                  <div key={idx} className="flex items-center gap-2 md:gap-3 bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 px-4 py-2.5 md:px-6 md:py-4 rounded-xl md:rounded-2xl hover:bg-white/[0.04] transition-all group hover:-translate-y-1">
+                    <div className="p-1.5 md:p-2 bg-[#060913] rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors shadow-inner flex items-center justify-center [&>svg]:w-4 [&>svg]:h-4 md:[&>svg]:w-5 md:[&>svg]:h-5">
                       {skill.icon}
                     </div>
-                    <span className="text-slate-200 font-semibold">{skill.name}</span>
+                    <span className="text-xs md:text-base text-slate-200 font-semibold">{skill.name}</span>
                   </div>
                 ))}
               </div>
@@ -477,7 +479,7 @@ export default function Portfolio() {
                   <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mx-auto mt-4"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                   {loadingCertificates ? (
                     <div className="col-span-full text-center text-cyan-400 py-6 font-bold animate-pulse">Loading certificates...</div>
                   ) : certificates.length === 0 ? (
@@ -486,8 +488,8 @@ export default function Portfolio() {
                     certificates.map((cert) => (
                       <div key={cert.id} className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 group hover:-translate-y-1.5 flex flex-col shadow-lg hover:shadow-cyan-500/10">
                         
-                        {/* Certificate Image Top Container */}
-                        <div className="h-52 bg-[#060913] relative overflow-hidden border-b border-white/5 flex items-center justify-center p-3">
+                        {/* Certificate Image Top Container - VERY COMPACT ON MOBILE (h-24), LARGE ON DESKTOP (md:h-52) */}
+                        <div className="h-24 md:h-52 bg-[#060913] relative overflow-hidden border-b border-white/5 flex items-center justify-center p-3">
                           <div className="absolute inset-0 bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
                           
                           {cert.image_url ? (
@@ -498,21 +500,21 @@ export default function Portfolio() {
                             />
                           ) : (
                             <div className="w-full h-full bg-cyan-500/5 flex items-center justify-center text-cyan-400/50 relative z-20 border border-dashed border-cyan-500/20 rounded-xl">
-                              <Award size={48} />
+                              <Award className="w-8 h-8 md:w-12 md:h-12" />
                             </div>
                           )}
                         </div>
 
                         {/* Certificate Details Bottom Container */}
-                        <div className="p-6 flex-grow flex flex-col justify-between bg-gradient-to-b from-white/[0.02] to-transparent">
+                        <div className="p-4 md:p-6 flex-grow flex flex-col justify-between bg-gradient-to-b from-white/[0.02] to-transparent">
                           <div>
-                            <h5 className="text-lg font-bold text-white leading-snug mb-2 group-hover:text-cyan-400 transition-colors">{cert.title}</h5>
-                            <p className="text-sm text-cyan-400 font-semibold mb-3">{cert.issuer}</p>
+                            <h5 className="text-base md:text-lg font-bold text-white leading-snug mb-2 group-hover:text-cyan-400 transition-colors">{cert.title}</h5>
+                            <p className="text-xs md:text-sm text-cyan-400 font-semibold mb-3">{cert.issuer}</p>
                           </div>
                           
                           {cert.date && (
-                            <div className="border-t border-white/10 pt-4 mt-2 flex items-center gap-2 text-xs text-slate-400 font-medium uppercase tracking-wider">
-                              <Award size={14} className="text-cyan-500" />
+                            <div className="border-t border-white/10 pt-3 md:pt-4 mt-2 flex items-center gap-2 text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wider">
+                              <Award size={14} className="text-cyan-500 hidden md:block" />
                               <span>Issued: {cert.date}</span>
                             </div>
                           )}
@@ -539,17 +541,17 @@ export default function Portfolio() {
             </div>
 
             {/* Dynamic Projects Grid */}
-            <div className="grid md:grid-cols-3 gap-8"> 
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"> 
               {loadingProjects ? (
-                <div className="col-span-3 text-center text-cyan-400 py-12 font-bold animate-pulse">Loading database...</div>
+                <div className="col-span-full text-center text-cyan-400 py-12 font-bold animate-pulse">Loading database...</div>
               ) : projects.length === 0 ? (
-                <div className="col-span-3 text-center text-slate-500 py-12 font-medium">No projects published yet. Log into the admin dashboard to add some!</div>
+                <div className="col-span-full text-center text-slate-500 py-12 font-medium">No projects published yet. Log into the admin dashboard to add some!</div>
               ) : (
                 projects.map((project) => (
                   <div key={project.id} className="bg-white/[0.02] border border-white/5 backdrop-blur-md rounded-2xl overflow-hidden hover:border-cyan-500/30 transition-all duration-500 flex flex-col group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-cyan-500/10">
                     
-                    {/* Project Image */}
-                    <div className="h-48 bg-[#060913] relative overflow-hidden border-b border-white/5">
+                    {/* Project Image - LARGE ON MOBILE (h-48) AND DESKTOP (md:h-52) */}
+                    <div className="h-48 md:h-52 bg-[#060913] relative overflow-hidden border-b border-white/5">
                       <div className="absolute inset-0 bg-cyan-500/20 group-hover:opacity-0 transition-opacity z-10 mix-blend-overlay"></div>
                       <img 
                         src={project.image_url} 
@@ -560,10 +562,10 @@ export default function Portfolio() {
                     </div>
 
                     {/* Project Info */}
-                    <div className="p-6 flex-grow flex flex-col justify-between">
+                    <div className="p-5 md:p-6 flex-grow flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between items-start mb-3 gap-4">
-                          <h3 className="text-xl font-extrabold text-white">{project.title}</h3>
+                          <h3 className="text-lg md:text-xl font-extrabold text-white">{project.title}</h3>
                           
                           {project.project_type && (
                             <span className={getBadgeStyle(project.project_type)}>
@@ -571,7 +573,7 @@ export default function Portfolio() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-slate-400 font-medium leading-relaxed mb-5">
+                        <p className="text-xs md:text-sm text-slate-400 font-medium leading-relaxed mb-5">
                           {project.description}
                         </p>
                       </div>
@@ -580,7 +582,7 @@ export default function Portfolio() {
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-6">
                           {project.tags && project.tags.map((tag, index) => (
-                             <span key={index} className="px-2.5 py-1 bg-[#060913]/80 text-slate-300 border border-white/10 text-[11px] font-bold rounded-md">
+                             <span key={index} className="px-2.5 py-1 bg-[#060913]/80 text-slate-300 border border-white/10 text-[10px] md:text-[11px] font-bold rounded-md">
                                {tag}
                              </span>
                           ))}
