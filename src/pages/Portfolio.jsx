@@ -108,6 +108,12 @@ export default function Portfolio() {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(120);
 
+  // Dynamic States for Projects & Certificates
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [certificates, setCertificates] = useState([]);
+  const [loadingCertificates, setLoadingCertificates] = useState(true);
+
   // Typewriter Logic
   useEffect(() => {
     const i = loopNum % ROLES.length;
@@ -155,6 +161,41 @@ export default function Portfolio() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Fetch Projects and Certificates
+  useEffect(() => {
+    const fetchPortfolioData = async () => {
+      try {
+        const { data: projectData, error: projectError } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (projectError) throw projectError;
+        if (projectData) setProjects(projectData);
+      } catch (error) {
+        console.error("Error fetching projects:", error.message);
+      } finally {
+        setLoadingProjects(false);
+      }
+
+      try {
+        const { data: certData, error: certError } = await supabase
+          .from('certificates')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (certError) throw certError;
+        if (certData) setCertificates(certData);
+      } catch (error) {
+        console.error("Error fetching certificates:", error.message);
+      } finally {
+        setLoadingCertificates(false);
+      }
+    };
+
+    fetchPortfolioData();
+  }, []);
+
   const scrollToSection = (e, id) => {
     e.preventDefault();
     setMobileMenuOpen(false);
@@ -167,12 +208,11 @@ export default function Portfolio() {
     }
   };
 
-const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus({ submitting: true, submitted: false });
 
     try {
-      // Send the email using EmailJS
       await emailjs.send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
@@ -184,17 +224,26 @@ const handleFormSubmit = async (e) => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
-      // On Success: Show success message and clear the form
       setFormStatus({ submitting: false, submitted: true });
       setFormData({ name: '', email: '', message: '' });
-      
-      // Hide the success message after 5 seconds
       setTimeout(() => setFormStatus({ submitting: false, submitted: false }), 5000);
-
     } catch (error) {
       console.error('Failed to send email:', error);
       alert('Something went wrong. Please try emailing me directly.');
       setFormStatus({ submitting: false, submitted: false });
+    }
+  };
+
+  const getBadgeStyle = (type) => {
+    const baseClasses = "px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider border";
+    switch (type) {
+      case 'Ongoing': 
+        return `${baseClasses} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`;
+      case 'Group': 
+        return `${baseClasses} bg-blue-500/20 text-blue-400 border-blue-500/20`;
+      case 'Individual':
+      default: 
+        return `${baseClasses} bg-cyan-500/20 text-cyan-400 border-cyan-500/20`; 
     }
   };
 
@@ -207,54 +256,6 @@ const handleFormSubmit = async (e) => {
     { id: 'contact', label: 'Contact' }
   ];
 
-
-  // 1. Set up state to hold your dynamic projects
-  const [projects, setProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
-
-  // 2. Fetch data from Supabase when the page loads
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        // Fetch all projects, ordering them by newest first
-        const { data, error } = await supabase
-          .from('projects')
-          .select('*')
-          .order('created_at', { ascending: true });
-
-        if (error) throw error;
-        
-        if (data) {
-          setProjects(data);
-        }
-      } catch (error) {
-        console.error("Error fetching projects:", error.message);
-      } finally {
-        setLoadingProjects(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
-  
-const getBadgeStyle = (type) => {
-  // These base classes apply to EVERY badge (small text, padding, rounded shape)
-  const baseClasses = "px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider border";
-  
-  switch (type) {
-    case 'Ongoing': 
-      return `${baseClasses} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`;
-    case 'Group': 
-      return `${baseClasses} bg-blue-500/20 text-blue-400 border-blue-500/20`;
-    case 'Individual':
-    default: 
-      return `${baseClasses} bg-cyan-500/20 text-cyan-400 border-cyan-500/20`; 
-  }
-};
-
-
-
-
   return (
     <div className="min-h-screen bg-[#060913] text-slate-300 font-sans selection:bg-cyan-500/30 selection:text-cyan-100 overflow-hidden relative">
       
@@ -265,9 +266,6 @@ const getBadgeStyle = (type) => {
       <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-[#060913]/80 backdrop-blur-xl border-b border-white/5 shadow-2xl py-4' : 'bg-transparent py-6'}`}>
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
           <a href="#home" onClick={(e) => scrollToSection(e, 'home')} className="text-2xl font-black tracking-tighter text-white flex items-center gap-3 group">
-            {/* <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 text-white rounded-xl flex items-center justify-center text-sm shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-              PD
-            </div> */}
             Pramodika Dulanja
           </a>
 
@@ -388,63 +386,37 @@ const getBadgeStyle = (type) => {
           </div>
         </section>
 
-        {/* EDUCATION & CERTS SECTION */}
+        {/* EDUCATION SECTION */}
         <section id="education" className="py-32">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-20">
-              
-              <div>
-                <p className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-2">Background</p>
-                <h2 className="text-4xl font-black text-white mb-10">Education</h2>
-                
-                <div className="space-y-0 relative border-l border-white/10 ml-4">
-                  <div className="relative pl-10 pb-12 group">
-                    <div className="absolute top-0 -left-[17px] w-8 h-8 bg-[#060913] border-2 border-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
-                      <GraduationCap size={14} className="text-cyan-400" />
-                    </div>
-                    <div className="bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 rounded-2xl p-7 transition-all hover:bg-white/[0.04]">
-                      <span className="text-xs font-bold tracking-wider text-cyan-400 uppercase mb-2 block">2024 - Present</span>
-                      <h3 className="text-xl font-bold text-white mb-2">BSc. (Hons) in Computing & Information Systems</h3>
-                      <h4 className="text-md text-slate-400 font-medium">Sabaragamuwa University of Sri Lanka</h4>
-                    </div>
-                  </div>
-
-                  <div className="relative pl-10 group">
-                    <div className="absolute top-0 -left-[17px] w-8 h-8 bg-[#060913] border-2 border-slate-700 rounded-full flex items-center justify-center group-hover:border-cyan-500 transition-colors">
-                      <GraduationCap size={14} className="text-slate-400 group-hover:text-cyan-400" />
-                    </div>
-                    <div className="bg-white/[0.02] border border-white/5 hover:border-slate-600 rounded-2xl p-7 transition-all">
-                      <span className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-2 block">2022</span>
-                      <h3 className="text-xl font-bold text-white mb-2">G.C.E A/L - Physical Science Stream</h3>
-                      <h4 className="text-md text-slate-400 font-medium">Ananda Maithreya Central College, Balangoda</h4>
-                    </div>
-                  </div>
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <p className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-2">Background</p>
+              <h2 className="text-4xl font-black text-white">Education</h2>
+              <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mx-auto mt-4"></div>
+            </div>
+            
+            <div className="space-y-0 relative border-l border-white/10 ml-4 md:ml-20">
+              <div className="relative pl-10 pb-12 group">
+                <div className="absolute top-0 -left-[17px] w-8 h-8 bg-[#060913] border-2 border-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
+                  <GraduationCap size={14} className="text-cyan-400" />
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 rounded-2xl p-7 transition-all hover:bg-white/[0.04]">
+                  <span className="text-xs font-bold tracking-wider text-cyan-400 uppercase mb-2 block">2024 - Present</span>
+                  <h3 className="text-xl font-bold text-white mb-2">BSc. (Hons) in Computing & Information Systems</h3>
+                  <h4 className="text-md text-slate-400 font-medium">Sabaragamuwa University of Sri Lanka</h4>
                 </div>
               </div>
 
-              <div>
-                <p className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-2">Achievements</p>
-                <h2 className="text-4xl font-black text-white mb-10">Certifications</h2>
-
-                <div className="space-y-5">
-                  {[
-                    { title: 'Innovate With Ballerina', issuer: 'IEEE Student Branch UoM & WSO2' },
-                    { title: 'Web Design for Beginners', issuer: 'University of Moratuwa' },
-                    { title: 'Advanced Java Programming', issuer: 'Sabaragamuwa University of Sri Lanka' }
-                  ].map((cert, idx) => (
-                    <div key={idx} className="flex items-center gap-6 bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] p-5 rounded-2xl transition-all group hover:-translate-y-1">
-                      <div className="p-4 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-xl group-hover:scale-110 transition-transform">
-                        <Award size={24} />
-                      </div>
-                      <div>
-                        <h4 className="text-lg text-white font-bold mb-1">{cert.title}</h4>
-                        <p className="text-sm text-slate-400 font-medium">{cert.issuer}</p>
-                      </div>
-                    </div>
-                  ))}
+              <div className="relative pl-10 group">
+                <div className="absolute top-0 -left-[17px] w-8 h-8 bg-[#060913] border-2 border-slate-700 rounded-full flex items-center justify-center group-hover:border-cyan-500 transition-colors">
+                  <GraduationCap size={14} className="text-slate-400 group-hover:text-cyan-400" />
+                </div>
+                <div className="bg-white/[0.02] border border-white/5 hover:border-slate-600 rounded-2xl p-7 transition-all">
+                  <span className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-2 block">2022</span>
+                  <h3 className="text-xl font-bold text-white mb-2">G.C.E A/L - Physical Science Stream</h3>
+                  <h4 className="text-md text-slate-400 font-medium">Ananda Maithreya Central College, Balangoda</h4>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
@@ -486,7 +458,7 @@ const getBadgeStyle = (type) => {
                 <h3 className="text-3xl font-black text-white mb-4">Professional Attributes</h3>
                 <p className="text-slate-400 font-medium">Core competencies driving effective collaboration and project success.</p>
               </div>
-              <div className="flex flex-wrap justify-center gap-8">
+              <div className="flex flex-wrap justify-center gap-8 mb-20">
                 {SOFT_SKILLS.map((skill, idx) => (
                   <div key={idx} className="flex items-center gap-3 bg-white/[0.02] border border-white/5 hover:border-cyan-500/30 px-6 py-4 rounded-2xl hover:bg-white/[0.04] transition-all group hover:-translate-y-1">
                     <div className="p-2 bg-[#060913] rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors shadow-inner">
@@ -496,6 +468,62 @@ const getBadgeStyle = (type) => {
                   </div>
                 ))}
               </div>
+
+              {/* DYNAMIC CERTIFICATES SECTION */}
+              <div className="mt-20">
+                <div className="text-center mb-10">
+                  <p className="text-cyan-400 font-bold tracking-widest uppercase text-xs mb-2">Credentials</p>
+                  <h4 className="text-3xl font-extrabold text-white">Certifications & Honors</h4>
+                  <div className="w-16 h-1 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full mx-auto mt-4"></div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {loadingCertificates ? (
+                    <div className="col-span-full text-center text-cyan-400 py-6 font-bold animate-pulse">Loading certificates...</div>
+                  ) : certificates.length === 0 ? (
+                    <div className="col-span-full text-center text-slate-500 py-6 font-medium">No certificates published yet.</div>
+                  ) : (
+                    certificates.map((cert) => (
+                      <div key={cert.id} className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all duration-300 group hover:-translate-y-1.5 flex flex-col shadow-lg hover:shadow-cyan-500/10">
+                        
+                        {/* Certificate Image Top Container */}
+                        <div className="h-52 bg-[#060913] relative overflow-hidden border-b border-white/5 flex items-center justify-center p-3">
+                          <div className="absolute inset-0 bg-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
+                          
+                          {cert.image_url ? (
+                            <img 
+                              src={cert.image_url} 
+                              alt={cert.title} 
+                              className="w-full h-full object-contain relative z-20 group-hover:scale-105 transition-transform duration-500 drop-shadow-md" 
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-cyan-500/5 flex items-center justify-center text-cyan-400/50 relative z-20 border border-dashed border-cyan-500/20 rounded-xl">
+                              <Award size={48} />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Certificate Details Bottom Container */}
+                        <div className="p-6 flex-grow flex flex-col justify-between bg-gradient-to-b from-white/[0.02] to-transparent">
+                          <div>
+                            <h5 className="text-lg font-bold text-white leading-snug mb-2 group-hover:text-cyan-400 transition-colors">{cert.title}</h5>
+                            <p className="text-sm text-cyan-400 font-semibold mb-3">{cert.issuer}</p>
+                          </div>
+                          
+                          {cert.date && (
+                            <div className="border-t border-white/10 pt-4 mt-2 flex items-center gap-2 text-xs text-slate-400 font-medium uppercase tracking-wider">
+                              <Award size={14} className="text-cyan-500" />
+                              <span>Issued: {cert.date}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
             </div>
 
           </div>
@@ -534,15 +562,15 @@ const getBadgeStyle = (type) => {
                     {/* Project Info */}
                     <div className="p-6 flex-grow flex flex-col justify-between">
                       <div>
-                      <div className="flex justify-between items-start mb-3 gap-4">
-                        <h3 className="text-xl font-extrabold text-white">{project.title}</h3>
-                        
-                        {project.project_type && (
-                          <span className={getBadgeStyle(project.project_type)}>
-                            {project.project_type}
-                          </span>
-                        )}
-                      </div>
+                        <div className="flex justify-between items-start mb-3 gap-4">
+                          <h3 className="text-xl font-extrabold text-white">{project.title}</h3>
+                          
+                          {project.project_type && (
+                            <span className={getBadgeStyle(project.project_type)}>
+                              {project.project_type}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-sm text-slate-400 font-medium leading-relaxed mb-5">
                           {project.description}
                         </p>
@@ -580,7 +608,6 @@ const getBadgeStyle = (type) => {
           </div>
         </section>
 
-        
         {/* CONTACT SECTION */}
         <section id="contact" className="py-24 relative">
           <div className="absolute inset-0 bg-slate-900/20 border-t border-white/5"></div>
@@ -690,4 +717,5 @@ const getBadgeStyle = (type) => {
         </div>
       </footer>
     </div>
-  );}
+  );
+}
